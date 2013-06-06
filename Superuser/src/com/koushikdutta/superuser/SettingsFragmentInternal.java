@@ -182,68 +182,6 @@ public class SettingsFragmentInternal extends BetterListFragmentInternal {
             }
         }).setAttrDrawable(R.attr.toggleIcon);
         
-        if (Settings.getMultiuserMode(getActivity()) != Settings.MULTIUSER_MODE_NONE) {
-            addItem(R.string.security, new ListItem(this, R.string.multiuser_policy, 0) {
-                void update() {
-                    int res = -1;
-                    switch (Settings.getMultiuserMode(getActivity())) {
-                    case Settings.MULTIUSER_MODE_OWNER_MANAGED:
-                        res = R.string.multiuser_owner_managed_summary;
-                        break;
-                    case Settings.MULTIUSER_MODE_OWNER_ONLY:
-                        res = R.string.multiuser_owner_only_summary;
-                        break;
-                    case Settings.MULTIUSER_MODE_USER:
-                        res = R.string.multiuser_user_summary;
-                        break;
-                    }
-                    
-                    if (!Helper.isAdminUser(getActivity())) {
-                        setEnabled(false);
-                        String s = "";
-                        if (res != -1)
-                            s = getString(res) + "\n";
-                        setSummary(s + getString(R.string.multiuser_require_owner));
-                    }
-                    else {
-                        if (res != -1)
-                            setSummary(res);
-                    }
-                }
-                
-                {
-                    update();
-                }
-                
-                @Override
-                public void onClick(View view) {
-                    super.onClick(view);
-                    
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(R.string.multiuser_policy);
-                    String[] items = new String[] { getString(R.string.multiuser_owner_only), getString(R.string.multiuser_owner_managed), getString(R.string.multiuser_user) };
-                    builder.setItems(items, new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                            case 0:
-                                Settings.setMultiuserMode(getActivity(), Settings.MULTIUSER_MODE_OWNER_ONLY);
-                                break;
-                            case 1:
-                                Settings.setMultiuserMode(getActivity(), Settings.MULTIUSER_MODE_OWNER_MANAGED);
-                                break;
-                            case 2:
-                                Settings.setMultiuserMode(getActivity(), Settings.MULTIUSER_MODE_USER);
-                                break;
-                            }
-                            update();
-                        }
-                    });
-                    builder.create().show();
-                }
-            }).setAttrDrawable(R.attr.multiuserIcon);
-        }
-        
         addItem(R.string.security, new ListItem(this, R.string.declared_permission, R.string.declared_permission_summary) {
             @Override
             public void onClick(View view) {
